@@ -1,40 +1,6 @@
 <template>
   <div class="home">
-    <b-modal id="delete-modal" ref="modal" title="Delete Post" centered>
-      <template slot="modal-header">
-        <h5>Delete Post</h5>
-      </template>
-      <template slot="default">
-        <p>Are you sure you want to delete this post?</p>
-      </template>
-      <template slot="modal-footer" slot-scope="{ cancel }">
-        <b-button size="sm" variant="default" @click="cancel()">Cancel</b-button>
-        <b-button size="sm" variant="danger" @click="deletePost()">Delete</b-button>
-      </template>
-    </b-modal> 
 
-    <div class="post card" style="margin-bottom: 20px; padding:0px;" v-for="post in filteredPost" v-bind:key="post.post_id">
-      <div class="card-header">
-        <img style="width: 32px; margin-right: 10px;" src="../../public/telogo.png"/><router-link style="color: #00ADEE; text-decoration: none;" :to="'/user_posts/' + post.username">{{post.username}}</router-link> - {{post.title}}
-         <b-button v-if="isAdmin" class="float-right" variant="danger" size="sm" v-b-modal.delete-modal @click="dpost=post.post_id">delete</b-button>
-      </div>
-      <router-link v-bind:to="'/detail/post_id/' + post.post_id">
-      <img class="card-img-center" v-bind:src ="post.img_url" alt='img' >
-      </router-link>
-      <div class="card-text" style="padding-left: 10px;">
-        {{post.comments.length}} comment<span v-if="post.comments.length != 1">s</span>
-      </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item" v-if="post.comments.length != 0"><router-link style="color: #00ADEE; text-decoration: none;" :to="'/user_posts/' + post.comments[0].username">{{post.comments[0].username}}</router-link>: {{post.comments[0].comment}}</li>
-      </ul>
-      <div class="card-footer">
-        <small class="text-muted">Posted {{ post.date_time | moment }}</small>
-        <span v-if="isLoggedIn">
-        <i v-on:click.prevent="toggleLike(post.post_id,$event)" :class="{'fas fa-heart' : post.liked, 'far fa-heart' : !post.liked}"></i><span class="badge badge-light">{{post.numberOfLikes}}</span>
-        <i v-on:click.prevent="toggleFavorite(post.post_id,$event)" class="far fa-star" :class="{'fas fa-star' : post.favorited, 'far fa-star' : !post.favorited}"></i>
-        </span>
-      </div>
-    </div>
   </div>
 </template>
 <script src="../node_modules/moment/moment.js"></script>
@@ -47,9 +13,6 @@ export default {
   data() {
     return {
       postAPI: "http://localhost:8080/tegram/post",
-      posts: [],
-      dpost: '',
-      userSrch: '',
       isLoggedIn: false,
       isAdmin: false
     };
@@ -179,14 +142,7 @@ export default {
       })
       .catch((err) => console.error(err));
     } else {
-      fetch(this.postAPI+"/allposts")
-      .then((response) => {
-        return response.json();
-      })
-      .then((posts) => {
-        this.posts = posts;
-      })
-      .catch((err) => console.error(err));
+      this.$router.push('/login');
     }
   }
 };

@@ -29,9 +29,6 @@
 						<!-- Every url in the app must be authenticated except /login -->
 						<value>/login</value>
 						<value>/register</value>
-						<value>/post/allposts</value>
-						<value>/comment/all/</value>
-						<value>/tegram</value>
 					</list>
 				</property>
 			</bean>
@@ -56,7 +53,7 @@
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url" value="jdbc:postgresql://localhost:5432/tegram" />
+		<property name="url" value="jdbc:postgresql://localhost:5432/timeclock" />
 		<property name="username" value="postgres" />
 		<property name="password" value="postgres1" />
 	</bean>

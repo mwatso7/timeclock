@@ -5,10 +5,6 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Logout from './views/Logout.vue'
 import Register from './views/Register.vue'
-import Detail from './views/Detail.vue'
-import Upload from './views/Upload.vue'
-import UserPosts from './views/UserPosts.vue'
-import Favorites from './views/Favorites.vue'
 
 Vue.use(Router)
 
@@ -34,30 +30,6 @@ const router = new Router({
       }
     },
     {
-      path: '/user_posts/:username',
-      name: 'user_posts',
-      component: UserPosts,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/favorites',
-      name: 'favorites',
-      component: Favorites,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/success',
-      name: 'success',
-      component: Home,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
       path: "/login",
       name: "login",
       component: Login,
@@ -79,22 +51,6 @@ const router = new Router({
       component: Register,
       meta: {
         requiresAuth: false
-      }
-    },
-    {
-      path:"/detail/post_id/:post_id",
-      name:"detail",
-      component: Detail,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: "/upload",
-      name: "upload",
-      component: Upload,
-      meta: {
-        requiresAuth: true
       }
     }
   ]

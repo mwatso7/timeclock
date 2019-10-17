@@ -22,7 +22,7 @@ import com.techelevator.model.User;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/stamp")
+@RequestMapping("/api")
 public class TimeStampController {
 
 	private TimeStampDao timeStampDao;
@@ -59,7 +59,7 @@ public class TimeStampController {
 //		return post;
 //	}
 	
-	@GetMapping("/user/{username}")
+	@GetMapping("/userstamps/{username}")
 	public List<TimeStamp> getUserPosts(@PathVariable String username) throws UserNotFoundException {
 		List<TimeStamp> timeStamps = timeStampDao.getTimeStampsByUsername(username);
 		if (timeStamps != null) {

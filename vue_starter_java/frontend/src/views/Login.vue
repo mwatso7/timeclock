@@ -28,7 +28,7 @@
         required
       />
       <router-link :to="{ name: 'register' }">Need an account?</router-link>
-      <button class="btn btn-lg btn-success btn-block" style="background-color: #8CC63F;" type="submit">Sign in</button>
+      <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
     </form>
   </div>
 </template>
@@ -71,7 +71,7 @@ export default {
               token = token.replace(/"/g, '');
             }
             auth.saveToken(token);
-            this.$router.push('/success');
+            this.$router.push('/home');
           }
         })
         .catch((err) => console.error(err));
@@ -83,7 +83,7 @@ export default {
 
 <style>
 #login{
-  margin-top: 130px;
+  margin-top: 30px;
   width: 100%;
   display: flex;
   justify-content: space-around
