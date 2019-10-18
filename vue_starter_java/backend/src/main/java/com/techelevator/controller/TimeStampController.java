@@ -60,7 +60,18 @@ public class TimeStampController {
 //	}
 	
 	@GetMapping("/userstamps/{username}")
-	public List<TimeStamp> getUserStamps(@PathVariable String username) throws UserNotFoundException {
+	public List<TimeStamp> getUserStampsByUser(@PathVariable String username) throws UserNotFoundException {
+		List<TimeStamp> timeStamps = timeStampDao.getTimeStampsByUsername(username);
+		if (timeStamps != null) {
+			return timeStamps;
+		} else {
+			throw new UserNotFoundException(username, "User Not Found!");
+		}
+	}
+	
+	@GetMapping("/stamps")
+	public List<TimeStamp> getUserStamps() throws UserNotFoundException {
+		String username = auth.getCurrentUser().getUsername();
 		List<TimeStamp> timeStamps = timeStampDao.getTimeStampsByUsername(username);
 		if (timeStamps != null) {
 			return timeStamps;

@@ -3,10 +3,11 @@
     <div id="nav" class="navbar navbar-default sticky-top shadow-sm" >
       <span class="d-flex align-items-center"><router-link  class="navbar-brand" style="text-decoration: none;" to="/"><span id="logo" class="h2"><i class="fas fa-user-clock"></i></span></router-link>
       <button v-if="isLoggedIn" class="btn btn-md btn-inline" :class="{'btn-success' : !lastTimeStamp.isIn, 'btn-danger' : lastTimeStamp.isIn}" @click.prevent="recordStamp()">{{buttonText}}</button></span>
-      <div class="d-flex align-items-center" style="color: #00ADEE;">
-          <router-link class="navtxt" v-if="!isLoggedIn" to="/login"><h2><i class="fas fa-sign-in-alt"></i></h2></router-link>        
-          <router-link class="navtxt" v-if="isLoggedIn" to="/logout"><h2><i class="fas fa-sign-out-alt"></i></h2></router-link>
-    </div>
+      <span class="d-flex align-items-center" style="color: #00ADEE;">
+          <h3 v-if="isLoggedIn" class="navtxt mr-4 mt-2"><i class="fas fa-paper-plane"></i></h3>
+          <router-link class="navtxt mt-2" v-if="!isLoggedIn" to="/login"><h2><i class="fas fa-sign-in-alt"></i></h2></router-link>        
+          <router-link class="navtxt mt-2" v-if="isLoggedIn" to="/logout"><h2><i class="fas fa-sign-out-alt"></i></h2></router-link>
+    </span>
     </div>
   </div>
 </template>

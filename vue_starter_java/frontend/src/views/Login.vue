@@ -2,7 +2,7 @@
   <div class="login">
     <nav-bar/>
     <div class="login-body text-center">
-    <form class="form-signin" style="width: 80%; max-width: 400px;" @submit.prevent="login">
+    <form class="form-signin" style="width: 80%; max-width: 350px;" @submit.prevent="login">
       <h1 class="h3 mb-3 font-weight-normal" style="color: rgb(62, 102, 131)">Please Sign In</h1>
       <div class="alert alert-danger" role="alert" v-if="invalidCredentials">
         Invalid username and password!
@@ -11,26 +11,36 @@
         Thank you for registering, please sign in.
       </div>
       <label for="username" class="sr-only">Username</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text mb-2" id="inputGroupPrepend"><i class="fas fa-user-alt"></i></span>
+        </div>
       <input
         type="text"
         id="username"
-        class="form-control"
+        class="form-control form-control-lg mb-2"
         placeholder="Username"
         v-model="user.username"
         required
         autofocus
       />
+      </div>
       <label for="password" class="sr-only">Password</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text mb-1" id="inputGroupPrepend"><i class="fas fa-key"></i></span>
+        </div>
       <input
         type="password"
         id="password"
-        class="form-control"
+        class="form-control form-control-lg mb-1"
         placeholder="Password"
         v-model="user.password"
         required
       />
+      </div>
       <router-link :to="{ name: 'register' }">Need an account?</router-link>
-      <button class="btn btn-light btn-lg btn-block" type="submit">Sign in</button>
+      <button class="btn btn-light btn-lg btn-block mt-1" type="submit">Sign in</button>
     </form>
   </div>
   </div>

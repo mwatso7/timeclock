@@ -58,7 +58,7 @@ public class JdbcTimeStampDao implements TimeStampDao{
 	@Override
 	public List<TimeStamp> getTimeStampsByUsername(String username) {
 		List<TimeStamp> theTimeStamps = new ArrayList<TimeStamp>();
-		String sqlSelectAllTimeStamps = "SELECT * FROM timestamps WHERE username = ?";
+		String sqlSelectAllTimeStamps = "SELECT * FROM timestamps WHERE username = ? ORDER BY id DESC";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlSelectAllTimeStamps, username);
 		
 		while (results.next()) {
