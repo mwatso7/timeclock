@@ -1,7 +1,9 @@
 <template>
-  <div id="login" class="text-center">
+  <div class="login">
+    <nav-bar/>
+    <div class="login-body text-center">
     <form class="form-signin" style="width: 80%; max-width: 400px;" @submit.prevent="login">
-      <h1 class="h3 mb-3 font-weight-normal" style="color: #00ADEE;">Please Sign In</h1>
+      <h1 class="h3 mb-3 font-weight-normal" style="color: rgb(62, 102, 131)">Please Sign In</h1>
       <div class="alert alert-danger" role="alert" v-if="invalidCredentials">
         Invalid username and password!
       </div>
@@ -28,17 +30,21 @@
         required
       />
       <router-link :to="{ name: 'register' }">Need an account?</router-link>
-      <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
+      <button class="btn btn-light btn-lg btn-block" type="submit">Sign in</button>
     </form>
+  </div>
   </div>
 </template>
 
 <script>
+import NavBar from '@/components/NavBar';
 import auth from '../auth';
 
 export default {
   name: 'login',
-  components: {},
+  components: {
+    NavBar
+  },
   data() {
     return {
       user: {
@@ -50,7 +56,7 @@ export default {
   },
   methods: {
     login() {
-      fetch(`${process.env.VUE_APP_REMOTE_API}/login`, {
+      fetch(`http://localhost:8080/TimeClock/login`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -71,7 +77,7 @@ export default {
               token = token.replace(/"/g, '');
             }
             auth.saveToken(token);
-            this.$router.push('/home');
+            this.$router.push('/');
           }
         })
         .catch((err) => console.error(err));
@@ -82,7 +88,7 @@ export default {
 
 
 <style>
-#login{
+.login-body{
   margin-top: 30px;
   width: 100%;
   display: flex;

@@ -1,134 +1,53 @@
 <template>
   <div class="home">
-
+    <nav-bar @clockevent="getLastTimeStamp()"/>
+    <div class="home-body pl-5 pr-5">
+    <h4>You have been clocked <span class="alert p-1" :class="{'alert-success' : lastTimeStamp.isIn, 'alert-danger' : !lastTimeStamp.isIn}">{{dateText}}</span> since {{ lastTimeStamp.stamp | moment }}</h4>
+    <ul>
+      <li></li>
+    </ul>
+  </div>
   </div>
 </template>
 <script src="../node_modules/moment/moment.js"></script>
 
 <script>
+import NavBar from '@/components/NavBar';
 import auth from '../auth';
+
 window.moment = require('moment');
 export default {
   name: "home",
+  components: {
+    NavBar
+  },
   data() {
     return {
-      postAPI: "http://localhost:8080/tegram/post",
+      stampAPI: "http://localhost:8080/TimeClock/api",
       isLoggedIn: false,
-      isAdmin: false
+      timeStamps: [],
+      lastTimeStamp: {
+        id: null,
+        stamp: null,
+        username: null,
+        isIn: false
+      }
     };
   },
   computed: {
-    filteredPost(vm){
-      return vm.posts.filter((pst) => {
-        return (pst.username == vm.userSrch || vm.userSrch == '');
-      });
+    dateText(){
+      return this.lastTimeStamp.isIn ? 'in' : 'out';
     }
   },
   filters: {
     moment: function (date) {
       let dateStr = date.year + "-" + date.monthValue + "-" + date.dayOfMonth + " " + date.hour + ":" + date.minute;
-      return moment(dateStr, 'YYYY-MM-DD hh:mm').fromNow();
+      return moment(dateStr, 'YYYY-MM-DD hh:mm').calendar().toLowerCase();
     }
   },
   methods: {
-    toggleLike(post_id, event){
-      const arrIndex = this.posts.findIndex((item) => item.post_id == post_id);
-      if(!this.posts[arrIndex].liked){
-        fetch(this.postAPI+"/addlike", { 
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + auth.getToken(),
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(this.posts[arrIndex].post_id)
-         })
-        .then(response => {
-          if (response.ok) {
-            this.posts[arrIndex].liked = !this.posts[arrIndex].liked;
-            this.posts[arrIndex].numberOfLikes++;
-            const likeIcon = event.target
-            likeIcon.classList.remove('far');
-            likeIcon.classList.add('fas');
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-       } else {
-         fetch(this.postAPI+"/deletelike", { 
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + auth.getToken(),
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(this.posts[arrIndex].post_id)
-         })
-        .then(response => {
-          if (response.ok) {
-            this.posts[arrIndex].liked = !this.posts[arrIndex].liked;
-            this.posts[arrIndex].numberOfLikes--;
-            const likeIcon = event.target
-            likeIcon.classList.remove('fas');
-            likeIcon.classList.add('far');
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-       }
-    },
-    toggleFavorite(post_id, event){
-      const arrIndex = this.posts.findIndex((item) => item.post_id == post_id);
-      if(!this.posts[arrIndex].favorited){
-        fetch(this.postAPI+"/addfavorite", { 
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + auth.getToken(),
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(this.posts[arrIndex].post_id)
-         })
-        .then(response => {
-          if (response.ok) {
-            this.posts[arrIndex].favorited = !this.posts[arrIndex].favorited;
-            const favoriteIcon = event.target
-            favoriteIcon.classList.remove('far');
-            favoriteIcon.classList.add('fas');
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-       } else {
-         fetch(this.postAPI+"/deletefavorite", { 
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + auth.getToken(),
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(this.posts[arrIndex].post_id)
-         })
-        .then(response => {
-          if (response.ok) {
-            this.posts[arrIndex].favorited = !this.posts[arrIndex].favorited;
-            const favoriteIcon = event.target
-            favoriteIcon.classList.remove('fas');
-            favoriteIcon.classList.add('far');
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-       }
-    }
-  },
-  created() {
-    if(auth.getUser()){
-      this.isLoggedIn = true;
-      this.user = auth.getUser();
-      this.isAdmin = (auth.getUser().rol == "admin") ? true: false;
-
-      fetch(this.postAPI+"/allpostsauth", { 
+    getLastTimeStamp(){
+      fetch(this.stampAPI + "/laststamp", { 
           method: "GET",
           headers: {
             Authorization: "Bearer " + auth.getToken(),
@@ -137,48 +56,28 @@ export default {
       .then((response) => {
         return response.json();
       })
-      .then((posts) => {
-        this.posts = posts;
+      .then((timeStamp) => {
+        console.log(timeStamp);
+        this.lastTimeStamp = timeStamp;
       })
       .catch((err) => console.error(err));
-    } else {
-      this.$router.push('/login');
     }
+  }, 
+  created() {
+    this.getLastTimeStamp();
   }
 };
 </script>
 
 <style>
-.fa-star{
-  margin-left: 20px;
-}
-.fa-heart{
-  margin-right: 2px;
-}
-.fa-times-circle{
-  color:red;
-  float: right;
-}
-.fas.fa-heart{
-  color:red;
-}
-.fas.fa-star{
-  color:rgb(254, 216, 0);
-  
-}
-body{
-  margin:0px;
-  padding: 0px;
-}
 
-div.home {
-  margin-top: 100px;
+.home-body {
+  margin-top: 30px;
 }
 
 a {
   text-decoration: none;
   color: #00ADEE;
-  
 }
 
 h1 {
@@ -188,29 +87,11 @@ h1 {
 }
 
 h4 {
-  color:green;
-  text-align: left;
-  
-}
-
-div.home > div.post > p{
-  text-align: left;
-  
+  color: rgb(62, 102, 131);
 }
 
 img {
   align-content: center;
-  
-  
-}
-
-div.card-footer{
-  display: flex;
-  justify-content: space-between;
-}
-
-div.card-footer > i{
-  
 }
 
 @media only screen and (max-width: 600px){
@@ -221,68 +102,17 @@ div.card-footer > i{
   }
 }
 
-/* @media only screen and (min-width: 600px){
-  img {
-    object-fit: cover;
-    width: 100%;
-  }
-} */
-
-/* @media only screen and (min-width: 768px){
-  img {
-    object-fit: cover;
-    width: 100%;
-  }
-
-  h4{
-    font-size: 1.5rem;
-    
-  }
-
-  p{
-    font-size: 1rem;
-  }
-}
-
-@media only screen and (min-width: 992px){
-  div.home > div.post{
-    border: 2px solid rgba(60, 74, 80, 0.13);
-    margin: 10px;
-    padding: 10px;
-    width: 600px;
-  }
-
-  img {
-    object-fit: cover;
-    width: 100%;
-  }
-
-  h4{
-    font-size: 2rem;
-  }
-
-  p{
-    font-size: 1.5rem;
-  }
-}
- */
 @media only screen and (min-width: 600px){
   img {
-    
     object-fit: cover;
     width: 100%;
-    
-  }
+ }
 
-  div.home {
+  .home-body{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
-
-  div.home > div.post{
-    width: 600px;
   }
 }
 </style>
