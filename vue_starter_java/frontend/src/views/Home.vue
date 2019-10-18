@@ -73,7 +73,7 @@ export default {
       return isIn ? 'in' : 'out';
     },
     dateText: function (date) {
-      let dateStr = date.year + "-" + date.monthValue + "-" + date.dayOfMonth;
+      let dateStr =  date.monthValue + "/" + date.dayOfMonth + "/" + date.year;
       return dateStr;
     },
     timeText: function (date) {
