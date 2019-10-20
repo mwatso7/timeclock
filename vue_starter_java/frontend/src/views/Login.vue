@@ -3,7 +3,7 @@
     <nav-bar/>
     <div class="login-body text-center">
     <form class="form-signin" style="width: 80%; max-width: 350px;" @submit.prevent="login">
-      <h1 class="h3 mb-3 font-weight-normal" style="color: rgb(62, 102, 131)">Please Sign In</h1>
+      <h3 class="h3 mb-3 font-weight-normal" style="color: rgb(62, 102, 131)">Please Sign In</h3>
       <div class="alert alert-danger" role="alert" v-if="invalidCredentials">
         Invalid username and password!
       </div>
@@ -40,7 +40,7 @@
       />
       </div>
       <router-link :to="{ name: 'register' }">Need an account?</router-link>
-      <button class="btn btn-light btn-lg btn-block mt-1" type="submit">Sign in</button>
+      <b-button block class="btn btn-lg mt-1" variant="light" type="submit">Sign in</b-button>
     </form>
   </div>
   </div>

@@ -15,6 +15,8 @@ import com.techelevator.authentication.AuthProvider;
 import com.techelevator.authentication.RequestAuthProvider;
 import com.techelevator.exception.PostNotFoundException;
 import com.techelevator.exception.UserNotFoundException;
+import com.techelevator.model.Recipient;
+import com.techelevator.model.RecipientDao;
 import com.techelevator.model.TimeStamp;
 import com.techelevator.model.TimeStampDao;
 import com.techelevator.model.User;
@@ -24,14 +26,16 @@ import com.techelevator.model.User;
 @CrossOrigin
 @RequestMapping("/api")
 public class TimeStampController {
-
+	
 	private TimeStampDao timeStampDao;
+	private RecipientDao recipientDao;
 	
 	@Autowired
 	private AuthProvider auth;
 	
-	public TimeStampController(TimeStampDao timeStampDao, AuthProvider auth) {
+	public TimeStampController(TimeStampDao timeStampDao, RecipientDao recipientDao, AuthProvider auth) {
 		this.timeStampDao = timeStampDao;
+		this.recipientDao = recipientDao;
 		this.auth = auth;
 	}
 	
@@ -80,6 +84,17 @@ public class TimeStampController {
 		}
 	}
 	
+	@GetMapping("/recipients")
+	public List<Recipient> getUserRecipients() throws UserNotFoundException {
+		String username = auth.getCurrentUser().getUsername();
+		List<Recipient> recipients = recipientDao.getRecipientsByUsername(username);
+		if (recipients != null) {
+			return recipients;
+		} else {
+			throw new UserNotFoundException(username, "User Not Found!");
+		}
+	}
+	
 	@GetMapping("/laststamp")
 	public TimeStamp getLastUserStamp() throws UserNotFoundException {
 		String username = auth.getCurrentUser().getUsername();
@@ -98,6 +113,19 @@ public class TimeStampController {
 		saveStamp.setIsIn(!isIn);
 		saveStamp.setUsername(auth.getCurrentUser().getUsername());
 		timeStampDao.saveTimeStamp(saveStamp);
+	}
+	
+	@RequestMapping(path = "/addrecipient", method = RequestMethod.POST)
+    public void addRecipient(@RequestBody String email) {
+		Recipient recipient = new Recipient();
+		recipient.setEmail(email.substring(1, email.length() - 1));
+		recipient.setUsername(auth.getCurrentUser().getUsername());
+		recipientDao.saveRecipient(recipient);
+	}
+	
+	@RequestMapping(path = "/deleterecipient", method = RequestMethod.DELETE)
+    public void deleteRecipient(@RequestBody int id) {
+		recipientDao.deleteRecipient(id);
 	}
 	
 }

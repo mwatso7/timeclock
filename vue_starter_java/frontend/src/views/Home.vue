@@ -44,6 +44,9 @@ export default {
   },
   computed: {
     totalClockedTime(){
+      if (this.timeStamps[0].id == 'N/A'){
+        return 'N/A';
+      }
       let outStamp = 0;
       let totalMilS = 0;
       let totalHours = 0;
@@ -60,12 +63,15 @@ export default {
       });
       totalHours = (totalMilS / (60*60*1000)).toFixed(0);
       let decimalMinutes = (totalMilS / (60*60*1000)).toFixed(2) - totalHours;
-      totalMinutes = (decimalMinutes * 60).toFixed(0);
+      totalMinutes = Math.abs((decimalMinutes * 60).toFixed(0));
       return totalHours + " Hours and " + totalMinutes + " Minutes";
     }
   },
   filters: {
     moment: function (date) {
+      if (date == 'N/A'){
+        return 'N/A';
+      }
       let dateStr = date.year + "-" + date.monthValue + "-" + date.dayOfMonth + " " + date.hour + ":" + date.minute;
       return moment(dateStr, 'YYYY-MM-DD hh:mm').calendar().toLowerCase();
     },
@@ -73,10 +79,16 @@ export default {
       return isIn ? 'in' : 'out';
     },
     dateText: function (date) {
+      if (date == 'N/A'){
+        return 'N/A';
+      }
       let dateStr =  date.monthValue + "/" + date.dayOfMonth + "/" + date.year;
       return dateStr;
     },
     timeText: function (date) {
+      if (date == 'N/A'){
+        return 'N/A';
+      }
       let hour = date.hour > 12 ? date.hour - 12 : date.hour;
       let minute = (date.minute < 10 ? '0' : '') + date.minute;
       let second = (date.second < 10 ? '0' : '') + date.second;
@@ -98,7 +110,16 @@ export default {
         return response.json();
       })
       .then((timeStamps) => {
-        this.timeStamps = timeStamps;
+        if (Array.isArray(timeStamps) && timeStamps.length) {
+          this.timeStamps = timeStamps;
+        } else {
+          this.timeStamps = [{
+            id: 'N/A',
+            stamp: 'N/A',
+            username: 'N/A',
+            isIn: false
+          }];
+        }
       })
       .catch((err) => console.error(err));
     }
