@@ -2,7 +2,7 @@
   <div class="home">
     <nav-bar @clockevent="getTimeStamps()"/>
     <div class="home-body pl-3 pr-3 float-left">
-    <h4>You have been clocked <span class="alert p-1" :class="{'alert-success' : timeStamps[0].isIn, 'alert-danger' : !timeStamps[0].isIn}">{{timeStamps[0].isIn | stateText}}</span> since {{ timeStamps[0].stamp | moment }}</h4>
+    <h4>You have been clocked <span class="alert pb-1 pt-1 pr-3 pl-3 round" :class="{'alert-success' : timeStamps[0].isIn, 'alert-danger' : !timeStamps[0].isIn}">{{timeStamps[0].isIn | stateText}}</span> since {{ timeStamps[0].stamp | moment }}</h4>
     <h4>Total hours clocked: {{totalClockedTime}}</h4>
 
     <b-card no-body class="mb-1">
@@ -61,7 +61,7 @@ export default {
           totalMilS += outStamp - inStamp;
         }
       });
-      totalHours = (totalMilS / (60*60*1000)).toFixed(0);
+      totalHours = Math.floor((totalMilS / (60*60*1000)).toFixed(1));
       let decimalMinutes = (totalMilS / (60*60*1000)).toFixed(2) - totalHours;
       totalMinutes = Math.abs((decimalMinutes * 60).toFixed(0));
       return totalHours + " Hours and " + totalMinutes + " Minutes";
@@ -159,8 +159,8 @@ img {
   width: 30%;
 }
 
-.history{
-
+span.round{
+ border-radius: 1.5rem;
 }
 
 @media only screen and (max-width: 600px){

@@ -2,7 +2,7 @@
   <div class="logout">
     <nav-bar/>
     <div class="logout-body">
-    <div class="alert alert-success logout-alert" role="alert">
+    <div class="alert alert-success logout-alert round" role="alert">
         You have been logged out successfully.
       </div>
   </div>
@@ -42,6 +42,9 @@ export default {
   margin-top: 30px;
   width: 80%; 
   max-width: 400px;
+}
+div.round{
+ border-radius: 1.5rem;
 }
 
 </style>

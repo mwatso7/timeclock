@@ -4,7 +4,7 @@
       <span class="d-flex align-items-center"><router-link  class="navbar-brand" style="text-decoration: none;" to="/" v-b-tooltip title="Home" variant="outline-success"><span id="logo" class="h2"><i class="fas fa-user-clock"></i></span></router-link>
       <b-button v-if="isLoggedIn" pill class="btn btn-lg btn-inline" style="width: 80px" :class="{'btn-success' : !lastTimeStamp.isIn, 'btn-danger' : lastTimeStamp.isIn}" @click.prevent="recordStamp()">{{buttonText}}</b-button></span>
       <span class="d-flex align-items-center" style="color: #00ADEE;">
-          <a href="#" v-b-modal.report-modal><h3 v-if="isLoggedIn" class="navtxt mr-4 mt-2" v-b-tooltip title="Send report" variant="outline-success"><i class="fas fa-paper-plane"></i></h3></a>
+          <a v-if="isLoggedIn" href="#" v-b-modal.report-modal><h3 class="navtxt mr-4 mt-2" v-b-tooltip title="Send report" variant="outline-success"><i class="fas fa-paper-plane"></i></h3></a>
           <router-link class="navtxt mt-2" v-if="!isLoggedIn" to="/login" v-b-tooltip title="Login" variant="outline-success"><h2><i class="fas fa-sign-in-alt"></i></h2></router-link>        
           <router-link class="navtxt mt-2" v-if="isLoggedIn" to="/logout" v-b-tooltip title="Logout" variant="outline-success"><h2><i class="fas fa-sign-out-alt"></i></h2></router-link>
     </span>
@@ -19,8 +19,8 @@
        <ul v-if="recipients[0].id != 'N/A'" style="list-style-type:none;" class="p-0">
             <li v-for="(recipient, index) in recipients" :key="recipient.id" class="mb-1">
               <div class="d-flex justify-content-between align-items-center p-2 m-0 alert" :class="{'alert-success' : recipient.enabled, 'alert-dark' : !recipient.enabled}">
-                <span @click.prevent="isEnabled(index)" class="text-truncate"><b-form-checkbox v-model="recipient.enabled" switch inline size="lg">{{recipient.email}}</b-form-checkbox></span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="deleteRecipient(recipient.id)"><span aria-hidden="true">&times;</span></button>
+                <div @click.prevent="isEnabled(index)" class="d-inline-block text-truncate"><b-form-checkbox v-model="recipient.enabled" switch inline size="lg">{{recipient.email}}</b-form-checkbox></div>
+                <button type="button" class="close ml-2" data-dismiss="alert" aria-label="Close" @click="deleteRecipient(recipient.id)"><span aria-hidden="true">&times;</span></button>
               </div>
             </li>
           </ul>
@@ -28,12 +28,13 @@
       <label for="email" class="sr-only">Email</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="inputGroupPrepend"><i class="fas fa-envelope"></i></span>
+          <span class="input-group-text pl-3 left-round" id="inputGroupPrepend"><i class="fas fa-envelope"></i></span>
         </div>
       <input
         type="email"
         id="email"
-        class="form-control form-control-lg"
+        style="border-radius: 0rem 1.5rem 1.5rem 0rem"
+        class="right-round form-control form-control-lg"
         placeholder="Email"
         v-model="email"
         required
@@ -46,8 +47,8 @@
     </form>
       </template>
       <template slot="modal-footer" slot-scope="{ cancel }">
-        <b-button size="sm" variant="default" @click="cancel()">Cancel</b-button>
-        <b-button size="sm" variant="primary" @click="sendReport()">Send</b-button>
+        <b-button pill size="md" variant="light" @click="cancel()">Cancel</b-button>
+        <b-button pill size="md" variant="primary" @click="sendReport()">Send</b-button>
       </template>
     </b-modal> 
   </div>
@@ -69,6 +70,16 @@
     background-color: rgb(62, 102, 131);
   
 }
+
+input.right-round{
+  border-radius: 0rem 1.5rem 1.5rem 0rem;
+}
+
+span.left-round{
+  background-color: white;
+  border-radius: 1.5rem 0rem 0rem 1.5rem
+}
+
 </style>
 
 
@@ -169,6 +180,15 @@ export default {
         });
     },
     getLastTimeStamp(){
+      if (!this.isLoggedIn){
+        this.lastTimeStamp = {
+          id: 'N/A',
+          stamp: 'N/A',
+          username: 'N/A',
+          isIn: false
+        };
+        return;
+      }
       fetch(this.stampAPI + "/laststamp", { 
           method: "GET",
           headers: {
@@ -181,11 +201,27 @@ export default {
       .then((timeStamp) => {
         if (timeStamp){
           this.lastTimeStamp = timeStamp;
+        } else {
+          this.lastTimeStamp = {
+            id: 'N/A',
+            stamp: 'N/A',
+            username: 'N/A',
+            isIn: false
+          };
         }
       })
       .catch((err) => console.error(err));
     },
     getRecipients(){
+      if (!this.isLoggedIn){
+            this.recipients = [{
+            id: 'N/A',
+            email: 'N/A',
+            username: 'N/A',
+            enabled: false
+          }];
+          return;
+      }
       fetch(this.stampAPI + "/recipients", { 
           method: "GET",
           headers: {
@@ -214,11 +250,9 @@ export default {
     }
   },
   created(){
-    this.isLoggedIn = auth.getUser ? true : false;
-    if (this.isLoggedIn){
-      this.getLastTimeStamp();
-      this.getRecipients();
-    }
+    //this.isLoggedIn = auth.getUser ? true : false;
+    this.getLastTimeStamp();
+    this.getRecipients();
   },
   watch: {
     '$route': function(value){

@@ -4,18 +4,18 @@
     <div class="register-body text-center">
     <form class="form-register" style="width: 80%; max-width: 350px;" @submit.prevent="register">
       <h3 class="h3 mb-3 font-weight-normal" style="color: rgb(62, 102, 131)">Create Account</h3>
-      <div class="alert alert-danger" role="alert" v-if="registrationErrors">
+      <div class="alert alert-danger round" role="alert" v-if="registrationErrors">
         There were problems registering this user.
       </div>
       <label for="username" class="sr-only">Username</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text mb-2" id="inputGroupPrepend"><i class="fas fa-user-alt"></i></span>
+          <span class="input-group-text mb-2 pl-3 left-round" id="inputGroupPrepend"><i class="fas fa-user-alt"></i></span>
         </div>
       <input
         type="text"
         id="username"
-        class="form-control form-control-lg mb-2"
+        class="form-control form-control-lg mb-2 right-round"
         placeholder="Username"
         v-model="user.username"
         required
@@ -25,12 +25,12 @@
       <label for="email" class="sr-only">Email</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text mb-2" id="inputGroupPrepend"><i class="fas fa-envelope"></i></span>
+          <span class="input-group-text mb-2 pl-3 left-round" id="inputGroupPrepend"><i class="fas fa-envelope"></i></span>
         </div>
       <input
         type="email"
         id="email"
-        class="form-control form-control-lg mb-2"
+        class="form-control form-control-lg mb-2 right-round"
         placeholder="Email"
         v-model="user.email"
         required
@@ -40,12 +40,12 @@
       <label for="password" class="sr-only">Password</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text mb-2" id="inputGroupPrepend"><i class="fas fa-key"></i></span>
+          <span class="input-group-text mb-2 pl-3 left-round" id="inputGroupPrepend"><i class="fas fa-key"></i></span>
         </div>
       <input
         type="password"
         id="password"
-        class="form-control form-control-lg mb-2"
+        class="form-control form-control-lg mb-2 right-round"
         placeholder="Password"
         v-model="user.password"
         required
@@ -53,12 +53,12 @@
       </div>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text mb-1" id="inputGroupPrepend"><i class="fas fa-key"></i></span>
+          <span class="input-group-text mb-1 pl-3 left-round" id="inputGroupPrepend"><i class="fas fa-key"></i></span>
         </div>
       <input
         type="password"
         id="confirmPassword"
-        class="form-control form-control-lg mb-1"
+        class="form-control form-control-lg mb-1 right-round"
         placeholder="Confirm Password"
         v-model="user.confirmPassword"
         required
@@ -67,9 +67,9 @@
       <router-link :to="{ name: 'login' }">
         Have an account?
       </router-link>
-      <button class="btn btn-light btn-lg btn-block mt-1" type="submit">
+      <b-button pill class="btn btn-light btn-lg btn-block mt-1" type="submit">
         Create Account
-      </button>
+      </b-button>
     </form>
   </div>
   </div>
@@ -127,6 +127,17 @@ export default {
   justify-content: space-around;
 }
 
+input.right-round{
+  border-radius: 0rem 1.5rem 1.5rem 0rem;
+}
 
+span.left-round{
+  background-color: white;
+  border-radius: 1.5rem 0rem 0rem 1.5rem
+}
+
+div.round{
+ border-radius: 1.5rem;
+}
 
 </style>
