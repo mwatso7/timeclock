@@ -2,37 +2,35 @@
   <div class="home">
     <nav-bar @clockevent="getTimeStamps()"/>
     <div class="home-body pl-3 pr-3 float-left">
-    <h5 class="mb-3">You have been clocked
-      <span class="alert pb-0 pt-0 pr-3 pl-3 ml-1 mr-1 round" :class="{'alert-success' : timeStamps[0].isIn, 'alert-danger' : !timeStamps[0].isIn}">
-        {{timeStamps[0].isIn | stateText}}</span>since {{ timeStamps[0].stamp | moment }}
-    </h5>
-    <h5>
-      Total: <span class="text-info">{{totalClocked}}</span>
-    </h5>
-    <h5>
+    <div class="h5 pb-3 mb-3 border-bottom">You have been clocked<span class="alert pb-0 pt-0 pr-3 pl-3 ml-1 mr-1 round" :class="{'alert-success' : timeStamps[0].isIn, 'alert-danger' : !timeStamps[0].isIn}">{{timeStamps[0].isIn | stateText}}</span>since {{ timeStamps[0].stamp | moment }}
+    </div>
+    <div class="h5 mb-1">
+      Total: <span class="text-info d-float-right">{{totalClocked}}</span>
+    </div>
+    <div class="h5 mb-1">
       Today: <span class="text-info">{{totalClockedToday}}</span>
-    </h5>
-    <h5>
+    </div>
+    <div class="h5 mb-1">
       This week: <span class="text-info">{{totalClockedWeek}}</span>
-    </h5>
-    <h5 class="mb-3">
+    </div>
+    <div class="h5 mb-3">
       This month: <span class="text-info">{{totalClockedMonth}}</span>
-    </h5>
+    </div>
 
-    <b-card no-body class="mb-1">
+    <b-card no-body class="mb-1 border-0">
       <b-card-header header-tag="header" class="p-0" role="tab">
-        <b-button block href="#" v-b-toggle.accordion-1 variant="default">History</b-button>
+        <b-button block href="#" v-b-toggle.accordion-1 variant="default" @click="activity = !activity"><span v-if="!activity" class="float-left">+</span><span v-if="activity" class="float-left">-</span>Activity</b-button>
       </b-card-header>
       <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
         <b-card-body class="p-0">
           <b-form-group size="lg" class="d-flex justify-content-around m-0">
           <b-form-radio-group
-          class="d-flex justify-content-around m-0"
+          class="d-flex justify-content-around mb-2 mt-2"
         id="btn-radios-2"
         v-model="selected"
         :options="options"
         buttons
-        button-variant="light"
+        button-variant="outline-secondary"
         size="md"
         name="radio-btn-outline"
       ></b-form-radio-group>
@@ -88,6 +86,7 @@ export default {
       stampAPI: "http://localhost:8080/TimeClock/api",
       isLoggedIn: false,
       timeStamps: [],
+      activity: false,
       selected: 'all',
         options: [
           { text: 'All', value: 'all' },
@@ -321,7 +320,7 @@ h1 {
   
 }
 
-h5 {
+.h5 {
   color: rgb(62, 102, 131);
 }
 
