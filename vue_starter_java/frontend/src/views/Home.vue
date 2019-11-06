@@ -24,16 +24,16 @@
       <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
         <b-card-body class="p-0">
           <b-form-group size="lg" class="d-flex justify-content-around m-0">
-          <b-form-radio-group
-          class="d-flex justify-content-around mb-2 mt-2"
-        id="btn-radios-2"
-        v-model="selected"
-        :options="options"
-        buttons
-        button-variant="outline-secondary"
-        size="md"
-        name="radio-btn-outline"
-      ></b-form-radio-group>
+            <b-form-radio-group
+              class="d-flex justify-content-around mb-2 mt-2"
+              id="btn-radios-2"
+              v-model="selected"
+              :options="options"
+              buttons
+              button-variant="outline-secondary"
+              size="md"
+              name="radio-btn-outline">
+            </b-form-radio-group>
           </b-form-group>
           <ul v-if="selected == 'all'" style="list-style-type:none;" class="p-0">
             <li v-for="timeStamp in timeStamps" :key="timeStamp.id" class="history p-1" :class="{'alert-success' : timeStamp.isIn, 'alert-danger' : !timeStamp.isIn}">
@@ -69,8 +69,48 @@
   </div>
   </div>
 </template>
-<script src="../node_modules/moment/moment.js"></script>
 
+<style>
+
+.home-body {
+  margin-top: 15px;
+}
+
+.h5 {
+  color: rgb(62, 102, 131);
+}
+
+.stamp-cell{
+  width: 30%;
+}
+
+span.round{
+  border-radius: 1.5rem;
+}
+
+@media only screen and (max-width: 600px){
+  img {
+    object-fit: cover;
+    width: 100%;
+   
+  }
+  .history{
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 600px){
+  img {
+    object-fit: cover;
+    width: 100%;
+  }
+  .history{
+    width: 100%;
+  }
+}
+</style>
+
+<script src="../node_modules/moment/moment.js"></script>
 <script>
 import NavBar from '@/components/NavBar';
 import auth from '../auth';
@@ -269,8 +309,11 @@ export default {
       totalHours = Math.floor((totalMilS / (60*60*1000)).toFixed(1));
       let decimalMinutes = (totalMilS / (60*60*1000)).toFixed(2) - totalHours;
       totalMinutes = Math.abs((decimalMinutes * 60).toFixed(0));
+      
+      let hourText = (totalHours == 1) ? " hour and " : " hours and ";
+      let minuteText = (totalMinutes == 1) ? " minute" : " minutes";
 
-      return totalHours + " Hours and " + totalMinutes + " Minutes";
+      return totalHours + hourText + totalMinutes + minuteText;
     },
     getTimeStamps(){
       fetch(this.stampAPI + "/stamps", { 
@@ -303,61 +346,4 @@ export default {
 };
 </script>
 
-<style>
-
-.home-body {
-  margin-top: 15px;
-}
-
-a {
-  text-decoration: none;
-  color: #00ADEE;
-}
-
-h1 {
-  color: blue;
-  text-align: center;
-  
-}
-
-.h5 {
-  color: rgb(62, 102, 131);
-}
-
-img {
-  align-content: center;
-}
-
-.stamp-cell{
-  width: 30%;
-}
-
-span.round{
- border-radius: 1.5rem;
-}
-
-@media only screen and (max-width: 600px){
-  img {
-    object-fit: cover;
-    width: 100%;
-   
-  }
-.history{
-  width: 100%;
-}
-
-}
-
-@media only screen and (min-width: 600px){
-  img {
-    object-fit: cover;
-    width: 100%;
- }
- .history{
-  width: 100%;
-}
-
-
-}
-</style>
 
