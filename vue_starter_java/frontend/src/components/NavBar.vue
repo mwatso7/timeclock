@@ -1,7 +1,8 @@
   <template>
   <div class="nav-bar">
     <div id="nav" class="navbar navbar-default sticky-top shadow-sm" >
-      <span class="d-flex align-items-center"><router-link  class="navbar-brand" style="text-decoration: none;" to="/" v-b-tooltip title="Home" variant="outline-success"><span id="logo" class="h2"><i class="fas fa-user-clock"></i></span></router-link>
+      <span class="d-flex align-items-center">
+        <router-link  class="navbar-brand" style="text-decoration: none;" to="/" v-b-tooltip title="Home" variant="outline-success"><span class="h2" :class="{'user-logo-inactive' : !isLoggedIn, 'user-logo-active' : isLoggedIn}"><i class="fas fa-user-clock"></i></span></router-link>
       <b-button v-if="isLoggedIn" pill class="btn btn-lg btn-inline" style="width: 80px" :class="{'btn-success' : !lastTimeStamp.isIn, 'btn-danger' : lastTimeStamp.isIn}" @click.prevent="recordStamp()">{{buttonText}}</b-button></span>
       <span class="d-flex align-items-center" style="color: #00ADEE;">
           <a v-if="isLoggedIn" href="#" v-b-modal.report-modal><h3 class="navtxt mr-4 mt-2" v-b-tooltip title="Send report" variant="outline-success"><i class="fas fa-paper-plane"></i></h3></a>
@@ -18,7 +19,7 @@
         <p>Are you sure you want to send a report of your TimeClock activity to the following email addresses?</p>
        <ul v-if="recipients[0].id != 'N/A'" style="list-style-type:none;" class="p-0">
             <li v-for="(recipient, index) in recipients" :key="recipient.id" class="mb-1">
-              <div class="d-flex justify-content-between align-items-center p-2 m-0 alert" :class="{'alert-success' : recipient.enabled, 'alert-dark' : !recipient.enabled}">
+              <div class="d-flex justify-content-between align-items-center pb-2 pt-2 pr-3 pl-3 m-0 alert" style="border-radius: 1.5rem" :class="{'alert-success' : recipient.enabled, 'alert-dark' : !recipient.enabled}">
                 <div @click.prevent="isEnabled(index)" class="d-inline-block text-truncate"><b-form-checkbox v-model="recipient.enabled" switch inline size="lg">{{recipient.email}}</b-form-checkbox></div>
                 <button type="button" class="close ml-2" data-dismiss="alert" aria-label="Close" @click="deleteRecipient(recipient.id)"><span aria-hidden="true">&times;</span></button>
               </div>
@@ -56,10 +57,13 @@
 
 <style scoped>
 
-#logo{
-    font-family: 'Pacifico';
+span.user-logo-inactive{
     color: rgb(201, 227, 236);
     margin-right: 5px;
+}
+.user-logo-active{
+  color: #d4edda;
+   margin-right: 5px;
 }
 
 .navtxt{
@@ -79,6 +83,7 @@ span.left-round{
   background-color: white;
   border-radius: 1.5rem 0rem 0rem 1.5rem
 }
+
 
 </style>
 
