@@ -1,5 +1,5 @@
   <template>
-  <div class="nav-bar">
+  <div id="nav-bar">
     <div id="nav" class="navbar navbar-default sticky-top shadow-sm" >
       <span class="d-flex align-items-center">
         <router-link  class="navbar-brand" style="text-decoration: none;" to="/" v-b-tooltip title="Home" variant="outline-success"><span class="h2" :class="{'user-logo-inactive' : !isLoggedIn, 'user-logo-active' : isLoggedIn}"><i class="fas fa-user-clock"></i></span></router-link>
@@ -93,6 +93,7 @@ import auth from '../auth'
 
 export default {
   name: 'nav-bar',
+  props: ['timeStamps', 'total', 'totalToday', 'totalWeek', 'totalMonth', 'lastActivity'],
   data(){
     return {
       stampAPI: "http://localhost:8080/TimeClock/api",
@@ -115,6 +116,28 @@ export default {
     }
   },
   methods:{
+    sendReport(){
+      let body = this.lastTimeStamp.username + " has been clocked " + this.buttonText + " since " + this.lastActivity;
+      body += "%0D%0A%0D%0ATotal: " + this.total
+            + "%0D%0AToday: " + this.totalToday 
+            + "%0D%0AThis week: " + this.totalWeek
+            + "%0D%0AThis month: " + this.totalMonth;
+      
+      let today = new Date();
+      let subject = "TimeClock report for " + today;
+
+      let sendTo = "";
+      this.recipients.forEach(recipient => {
+        if (recipient.enabled){
+          sendTo += ',' + recipient.email;
+        }
+      });
+      sendTo = sendTo.substring(1);
+      console.log(sendTo + "\n" + subject + "\n" + body);
+
+      window.open("mailto:" + sendTo + "?subject=" + subject + "&body=" + body);
+      this.$bvModal.hide("report-modal")
+    },
     isEnabled(index){
       
       this.recipients.splice(index, 1, {

@@ -1,29 +1,39 @@
 <template>
-  <div class="home">
-    <nav-bar @clockevent="getTimeStamps()"/>
+  <div id="home">
+    <nav-bar @clockevent="getTimeStamps()" 
+    v-bind:timeStamps="timeStamps" 
+    v-bind:total="totalClocked" 
+    v-bind:totalToday="totalClockedToday" 
+    v-bind:totalWeek="totalClockedWeek"
+    v-bind:totalMonth="totalClockedMonth"
+    v-bind:lastActivity="this.$options.filters.moment(timeStamps[0].stamp)"/>
     <div class="home-body pl-3 pr-3 float-left">
-    <div class="h5 pb-3 mb-3 border-bottom">You have been clocked<span class="alert pb-0 pt-0 pr-3 pl-3 ml-1 mr-1 round" :class="{'alert-success' : timeStamps[0].isIn, 'alert-danger' : !timeStamps[0].isIn}">{{timeStamps[0].isIn | stateText}}</span>since {{ timeStamps[0].stamp | moment }}
+    <div class="h5 pb-3 mb-3 border-bottom">You have been clocked
+      <span class="alert pb-0 pt-0 pr-3 pl-3 ml-1 mr-1 round" :class="{'alert-success' : timeStamps[0].isIn, 'alert-danger' : !timeStamps[0].isIn}">
+        {{timeStamps[0].isIn | stateText}}</span>since {{ timeStamps[0].stamp | moment }}
     </div>
     <div class="h5 mb-1">
-      Total: <span class="text-info d-float-right">{{totalClocked}}</span>
+      <div class="recent d-inline-block">Total: </div><span class="text-info">{{totalClocked}}</span>
     </div>
     <div class="h5 mb-1">
-      Today: <span class="text-info">{{totalClockedToday}}</span>
+      <div class="recent d-inline-block">Today: </div><span class="text-info">{{totalClockedToday}}</span>
     </div>
     <div class="h5 mb-1">
-      This week: <span class="text-info">{{totalClockedWeek}}</span>
+      <div class="recent d-inline-block">This week: </div><span class="text-info">{{totalClockedWeek}}</span>
     </div>
     <div class="h5 mb-3">
-      This month: <span class="text-info">{{totalClockedMonth}}</span>
+      <div class="recent d-inline-block">This month: </div><span class="text-info">{{totalClockedMonth}}</span>
     </div>
 
     <b-card no-body class="mb-1 border-0">
       <b-card-header header-tag="header" class="p-0" role="tab">
-        <b-button block href="#" v-b-toggle.accordion-1 variant="default" @click="activity = !activity"><span v-if="!activity" class="float-left">+</span><span v-if="activity" class="float-left">-</span>Activity</b-button>
+        <b-button block href="#" v-b-toggle.accordion-1 variant="default" @click="activity = !activity">
+          <span v-if="!activity" class="float-left">+</span>
+          <span v-if="activity" class="float-left">-</span>Activity</b-button>
       </b-card-header>
       <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
         <b-card-body class="p-0">
-          <b-form-group size="lg" class="d-flex justify-content-around m-0">
+          <b-form-group size="lg" class="d-flex justify-content-around m-0 round">
             <b-form-radio-group
               class="d-flex justify-content-around mb-2 mt-2"
               id="btn-radios-2"
@@ -35,30 +45,17 @@
               name="radio-btn-outline">
             </b-form-radio-group>
           </b-form-group>
-          <ul v-if="selected == 'all'" style="list-style-type:none;" class="p-0">
-            <li v-for="timeStamp in timeStamps" :key="timeStamp.id" class="history p-1" :class="{'alert-success' : timeStamp.isIn, 'alert-danger' : !timeStamp.isIn}">
-              <div class="stamp-cell d-inline-block">{{timeStamp.isIn | stateText}}</div><div class="stamp-cell d-inline-block">{{ timeStamp.stamp | timeText }}</div><div class="d-inline-block float-right">{{ timeStamp.stamp | dateText }}</div>
-            </li>
-          </ul>
-          <ul v-if="selected == 'day'" style="list-style-type:none;" class="p-0">
-            <li v-for="day in dailyActivity" :key="day.day" class="history p-0 mb-3 d-flex align-items-center alert-secondary">
-              <div class="d-inline-block text-center" style="width:30%">{{ day.day }}</div>
-              <div class="d-inline-block" style="width:70%">
-                <ul style="list-style-type:none;" class="p-0">
-                  <li v-for="timeStamp in day.stamps" :key="timeStamp.id" class="history p-1" :class="{'alert-success' : timeStamp.isIn, 'alert-danger' : !timeStamp.isIn}">
-                    <div class="d-inline-block">{{timeStamp.isIn | stateText}}</div><div class="d-inline-block float-right">{{ timeStamp.stamp | timeText }}</div>
-                  </li>
-                </ul>
-                </div>
-            </li>
-          </ul>
+
+          <all-stamps v-if="selected == 'all'" v-bind:timeStamps="timeStamps"/>
+          <day-stamps v-if="selected == 'day'" v-bind:timeStamps="timeStamps"/>
+          
           <ul v-if="selected == 'week'" style="list-style-type:none;" class="p-0">
-            <li class="alert-info history p-1">
+            <li class="alert alert-info history round">
               <div class="d-block">Coming soon...</div>
             </li>
           </ul>
           <ul v-if="selected == 'month'" style="list-style-type:none;" class="p-0">
-            <li class="alert-info history p-1">
+            <li class="alert alert-info history round">
               <div class="d-block">Coming soon...</div>
             </li>
           </ul>
@@ -84,42 +81,45 @@
   width: 30%;
 }
 
+ul.round{
+  border-radius: 1.5rem;
+}
+
+li.round{
+  border-radius: 1.5rem;
+}
+
+li.right-round{
+  border-radius: 0rem 1.5rem 1.5rem 0rem;
+}
+
 span.round{
   border-radius: 1.5rem;
 }
 
-@media only screen and (max-width: 600px){
-  img {
-    object-fit: cover;
-    width: 100%;
-   
-  }
-  .history{
-    width: 100%;
-  }
+.history{
+  width: 100%;
 }
 
-@media only screen and (min-width: 600px){
-  img {
-    object-fit: cover;
-    width: 100%;
-  }
-  .history{
-    width: 100%;
-  }
+.recent{
+  width: 115px;
 }
 </style>
 
 <script src="../node_modules/moment/moment.js"></script>
 <script>
 import NavBar from '@/components/NavBar';
+import AllStamps from '@/components/AllStamps';
+import DayStamps from '@/components/DayStamps';
 import auth from '../auth';
 
 window.moment = require('moment');
 export default {
   name: "home",
   components: {
-    NavBar
+    NavBar,
+    AllStamps,
+    DayStamps
   },
   data() {
     return {
@@ -137,58 +137,6 @@ export default {
     };
   },
   computed: {
-    dailyActivity(){ 
-
-      let stampedDays = [];
-      
-      this.timeStamps.forEach(stamp => {
-        stampedDays.push(this.$options.filters.dateText(stamp.stamp));
-      });
-
-      const unique = (value, index, self) => {
-        return self.indexOf(value) === index;
-      }
-
-      let uniqueStamps = stampedDays.filter(unique);
-
-      let dayArray = [];
-      uniqueStamps.forEach(stamp => {
-        let dayObj = {
-          day: stamp,
-          stamps: this.timeStamps.filter(day => {
-            return (stamp == this.$options.filters.dateText(day.stamp))
-          })
-        };
-        dayArray.push(dayObj);
-      });
-      return dayArray;
-    },
-    weeklyActivity(){ 
-
-      let stampedDays = [];
-      
-      this.timeStamps.forEach(stamp => {
-        stampedDays.push(this.$options.filters.dateText(stamp.stamp));
-      });
-
-      const unique = (value, index, self) => {
-        return self.indexOf(value) === index;
-      }
-
-      let uniqueStamps = stampedDays.filter(unique);
-
-      let dayArray = [];
-      uniqueStamps.forEach(stamp => {
-        let dayObj = {
-          day: stamp,
-          stamps: this.timeStamps.filter(day => {
-            return (stamp == this.$options.filters.dateText(day.stamp))
-          })
-        };
-        dayArray.push(dayObj);
-      });
-      return dayArray;
-    },
     totalClocked(){
       return this.totalClockedTime(this.timeStamps);
     },
@@ -231,7 +179,8 @@ export default {
         return this.$options.filters.dateText(aStamp.stamp) == filterString;
         });
       return this.totalClockedTime(stampsToday);
-    }
+    },
+    
   },
   filters: {
     moment: function (date) {
@@ -265,30 +214,17 @@ export default {
 
       let dateStr =  date.monthValue + "/" + compareDate.getMonthWeek() + "/" + date.year;
       return dateStr;
-    },
-    timeText: function (date) {
-      if (date == 'N/A'){
-        return 'N/A';
-      }
-      let hour = date.hour > 12 ? date.hour - 12 : date.hour;
-      let minute = (date.minute < 10 ? '0' : '') + date.minute;
-      let second = (date.second < 10 ? '0' : '') + date.second;
-      let am_pm = date.hour >= 12 ? "pm" : "am";
-
-      let dateStr = hour + ":" + minute + ":" + second + " " + am_pm;
-      return dateStr;
     }
 
   },
   methods: {
-    totalClockedDay(day){
-
-    },
     totalClockedTime(filteredStamps){
 
       if (this.timeStamps[0].id == 'N/A'){
         return 'N/A';
       }
+
+      filteredStamps.push
 
       let outStamp = 0;
       let totalMilS = 0;
@@ -303,6 +239,11 @@ export default {
           let dateStr = timeStamp.stamp.year + "-" + timeStamp.stamp.monthValue + "-" + timeStamp.stamp.dayOfMonth + " " + timeStamp.stamp.hour + ":" + timeStamp.stamp.minute;
           let inStamp = new Date(dateStr);
           totalMilS += outStamp - inStamp;
+        } else {
+          let currentTime = new Date();
+          let dateStr = timeStamp.stamp.year + "-" + timeStamp.stamp.monthValue + "-" + timeStamp.stamp.dayOfMonth + " " + timeStamp.stamp.hour + ":" + timeStamp.stamp.minute;
+          let inStamp = new Date(dateStr);
+          totalMilS += currentTime - inStamp;
         }
       });
 
@@ -328,6 +269,7 @@ export default {
       .then((timeStamps) => {
         if (Array.isArray(timeStamps) && timeStamps.length) {
           this.timeStamps = timeStamps;
+          this.setActivity();
         } else {
           this.timeStamps = [{
             id: 'N/A',

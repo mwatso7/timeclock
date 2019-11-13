@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div id="login">
     <nav-bar/>
     <div class="login-body text-center">
     <form class="form-signin" style="width: 80%; max-width: 350px;" @submit.prevent="login">
